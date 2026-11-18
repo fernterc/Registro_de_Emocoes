@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Registro de Emoções</title>
+  <meta name="description" content="Registro simples de situações, pensamentos, emoções e comportamentos.">
+  <meta name="theme-color" content="#4E6B5D">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Emoções">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ TELA: DIA ============ -->
+  <main id="screen-day" class="screen">
+    <div class="topbar">
+      <span class="brand">Registro de emoções</span>
+      <button type="button" id="btnExport" class="btn-pill">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Exportar
+      </button>
+    </div>
+
+    <div class="daynav">
+      <button type="button" id="btnPrev" class="navbtn" aria-label="Dia anterior">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div id="swipeZone" class="daycenter">
+        <button type="button" id="btnPickDate" class="daytitle" aria-label="Escolher outra data">
+          <span id="dayName" class="dayname">Segunda</span>
+          <span class="daydate">
+            <span id="dayDate">1 de janeiro de 2026</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <button type="button" id="btnNext" class="navbtn" aria-label="Próximo dia">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="daymeta">
+      <span id="todayTag" class="tag-today" hidden>Hoje</span>
+      <button type="button" id="btnGoToday" class="link-btn" hidden>Ir para hoje</button>
+    </div>
+
+    <section id="banner" class="banner" role="region" aria-label="Lembrete de exportação" hidden>
+      <button type="button" id="bannerClose" class="banner-close" aria-label="Fechar lembrete">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <p id="bannerText" class="banner-text"></p>
+      <div class="banner-actions">
+        <button type="button" id="bannerExport" class="btn btn-small btn-primary">Exportar agora</button>
+        <button type="button" id="bannerSnooze" class="btn btn-small">Lembrar na próxima quarta</button>
+      </div>
+    </section>
+
+    <div id="cards" class="cards" aria-live="polite"></div>
+
+    <div class="fab-layer">
+      <div class="fab-wrap">
+        <button type="button" id="fab" class="fab" aria-label="Novo registro">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ TELA: REGISTRO ============ -->
+  <main id="screen-entry" class="screen" hidden>
+    <header class="subbar">
+      <button type="button" id="entryBack" class="navbtn" aria-label="Voltar">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="subbar-title">
+        <h1 id="entryTitle">Novo registro</h1>
+        <p id="entrySub"></p>
+      </div>
+      <button type="button" id="entrySaveTop" class="btn btn-small btn-primary">Salvar</button>
+    </header>
+
+    <form id="entryForm" class="form" autocomplete="off" novalidate>
+      <div class="field">
+        <label for="f-area">Área da vida</label>
+        <select id="f-area" name="area">
+          <option value="">Selecione</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Relacionamentos">Relacionamentos</option>
+          <option value="Performance">Performance</option>
+          <option value="Lazer">Lazer</option>
+          <option value="Finanças">Finanças</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-situacao">Situação</label>
+        <textarea id="f-situacao" name="situacao" rows="5" placeholder="O que aconteceu?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-pensamentos">Pensamentos automáticos</label>
+        <textarea id="f-pensamentos" name="pensamentos" rows="5" placeholder="O que passou pela sua cabeça?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-emocoes">Emoções</label>
+        <textarea id="f-emocoes" name="emocoes" rows="5" placeholder="O que você sentiu?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-comportamentos">Comportamentos</label>
+        <textarea id="f-comportamentos" name="comportamentos" rows="5" placeholder="O que você fez?"></textarea>
+      </div>
+
+      <p id="formError" class="form-error" role="alert" hidden></p>
+
+      <div class="form-actions">
+        <button type="submit" id="entrySave" class="btn btn-primary btn-wide">Salvar registro</button>
+        <button type="button" id="entryDelete" class="btn btn-danger btn-wide" hidden>Excluir registro</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- ============ TELA: EXPORTAR ============ -->
+  <main id="screen-export" class="screen" hidden>
+    <header class="subbar">
+      <button type="button" id="exportBack" class="navbtn" aria-label="Voltar">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="subbar-title">
+        <h1>Exportar registros</h1>
+        <p>PDF com uma tabela por dia</p>
+      </div>
+    </header>
+
+    <div class="form">
+      <label class="check" for="exportAll">
+        <input type="checkbox" id="exportAll">
+        <span class="check-box" aria-hidden="true"></span>
+        <span>Exportar todos os dados já criados</span>
+      </label>
+
+      <div id="rangeBlock" class="range-block">
+        <p class="block-title">Período</p>
+        <div class="chips" role="group" aria-label="Atalhos de período">
+          <button type="button" class="chip" data-range="7d">Últimos 7 dias</button>
+          <button type="button" class="chip" data-range="month">Este mês</button>
+          <button type="button" class="chip" data-range="since" id="chipSince" hidden>Desde a última exportação</button>
+        </div>
+        <div id="exportCal" class="cal"></div>
+        <p class="cal-hint">Toque em um dia para começar e em outro para terminar o período.</p>
+      </div>
+
+      <div class="export-summary" aria-live="polite">
+        <p id="sumPeriod" class="sum-period"></p>
+        <p id="sumCount" class="sum-count"></p>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" id="btnShare" class="btn btn-primary btn-wide" hidden>Compartilhar PDF</button>
+        <button type="button" id="btnDownload" class="btn btn-wide">Baixar PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ MODAL: CALENDÁRIO ============ -->
+  <div id="calModal" class="backdrop" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Escolher data">
+      <div id="calMount" class="cal"></div>
+      <div class="sheet-actions">
+        <button type="button" id="calToday" class="btn btn-small">Hoje</button>
+        <button type="button" id="calClose" class="btn btn-small">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: CONFIRMAÇÃO ============ -->
+  <div id="confirmModal" class="backdrop backdrop-center" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+      <h2 id="confirmTitle" class="dialog-title"></h2>
+      <p id="confirmText" class="dialog-text"></p>
+      <div class="dialog-actions">
+        <button type="button" id="confirmNo" class="btn btn-small">Cancelar</button>
+        <button type="button" id="confirmYes" class="btn btn-small btn-danger-solid">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="lib/jspdf.umd.min.js"></script>
+  <script src="lib/jspdf.plugin.autotable.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
